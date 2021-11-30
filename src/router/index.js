@@ -51,8 +51,53 @@ export const constantRoutes = [
       path: 'dashboard',
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Dashboard', icon: 'dashboard' }
+      meta: { title: '仪表板', icon: 'dashboard' }
     }]
+  },
+
+  {
+    path: '/datamanage',
+    component: Layout,
+    alwaysShow: true,
+    redirect: '/datamanage/userList',
+    name: 'Datamanage',
+    meta: { title: '数据管理', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'userList',
+        name: 'UserList',
+        component: () => import('@/views/datamanage/userList/index'),
+        meta: { title: '用户列表', icon: 'table' }
+      },
+      {
+        path: 'enterpriseList',
+        name: 'EnterpriseList',
+        component: () => import('@/views/datamanage/enterpriseList/index'),
+        meta: { title: '企业列表', icon: 'table' }
+      }
+    ]
+  },
+
+  {
+    path: '/system',
+    component: Layout,
+    alwaysShow: true,
+    name: 'system',
+    meta: { title: '系统管理', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'notice',
+        name: 'Notice',
+        component: () => import('@/views/system/notice/index'),
+        meta: { title: '公告管理', icon: 'table' }
+      },
+      {
+        path: 'advertisement',
+        name: 'Advertisement',
+        component: () => import('@/views/system/advertisement/index'),
+        meta: { title: '广告管理', icon: 'table' }
+      }
+    ]
   },
 
   {
