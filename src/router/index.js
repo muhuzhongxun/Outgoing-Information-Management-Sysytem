@@ -96,6 +96,12 @@ export const constantRoutes = [
         name: 'Advertisement',
         component: () => import('@/views/system/advertisement/index'),
         meta: { title: '广告管理', icon: 'table' }
+      },
+      {
+        path: 'distribution',
+        name: 'Distribution',
+        component: () => import('@/views/system/distribution/index'),
+        meta: { title: '送货表单模板', icon: 'table' }
       }
     ]
   },
