@@ -74,6 +74,58 @@ export const constantRoutes = [
         name: 'EnterpriseList',
         component: () => import('@/views/datamanage/enterpriseList/index'),
         meta: { title: '企业列表', icon: 'table' }
+      },
+      {
+        path: 'OGList',
+        name: 'OGList',
+        component: () => import('@/views/datamanage/OGList/index'),
+        meta: { title: '外发信息列表', icon: 'table' }
+      },
+      {
+        path: 'IGList',
+        name: 'IGList',
+        component: () => import('@/views/datamanage/IGList/index'),
+        meta: { title: '承接信息列表', icon: 'table' }
+      },
+      {
+        path: 'orderList',
+        name: 'OrderList',
+        component: () => import('@/views/datamanage/orderList/index'),
+        meta: { title: '订单列表', icon: 'table' }
+      }
+    ]
+  },
+
+  {
+    path: '/service',
+    component: Layout,
+    alwaysShow: true,
+    name: 'service',
+    meta: { title: '业务审核', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'identical',
+        name: 'Identical',
+        component: () => import('@/views/service/identical/index'),
+        meta: { title: '实名认证', icon: 'table' }
+      },
+      {
+        path: 'OGReview',
+        name: 'OGReview',
+        component: () => import('@/views/service/OGReview/index'),
+        meta: { title: '外发信息审核', icon: 'table' }
+      },
+      {
+        path: 'IGReview',
+        name: 'IGReview',
+        component: () => import('@/views/service/IGReview/index'),
+        meta: { title: '承接信息审核', icon: 'table' }
+      },
+      {
+        path: 'complaint',
+        name: 'complaint',
+        component: () => import('@/views/service/complaint/index'),
+        meta: { title: '投诉处理', icon: 'table' }
       }
     ]
   },
@@ -96,11 +148,55 @@ export const constantRoutes = [
         name: 'Advertisement',
         component: () => import('@/views/system/advertisement/index'),
         meta: { title: '广告管理', icon: 'table' }
+      }
+    ]
+  },
+
+  {
+    path: '/dictionary',
+    component: Layout,
+    alwaysShow: true,
+    name: 'dictionary',
+    meta: { title: '数据字典', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'location',
+        name: 'Location',
+        component: () => import('@/views/dictionary/location/index'),
+        meta: { title: '地点地区管理', icon: 'table' }
+      },
+      {
+        path: 'item',
+        name: 'Item',
+        component: () => import('@/views/dictionary/item/index'),
+        meta: { title: '物品类别管理', icon: 'table' }
+      },
+      {
+        path: 'industry',
+        name: 'Industry',
+        component: () => import('@/views/dictionary/industry/index'),
+        meta: { title: '行业分类管理', icon: 'table' }
+      }
+    ]
+  },
+
+  {
+    path: '/maintenance',
+    component: Layout,
+    alwaysShow: true,
+    name: 'maintenance',
+    meta: { title: '系统维护', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'tree',
+        name: 'Tree',
+        component: () => import('@/views/maintenance/tree/index'),
+        meta: { title: '管理树', icon: 'table' }
       },
       {
         path: 'distribution',
         name: 'Distribution',
-        component: () => import('@/views/system/distribution/index'),
+        component: () => import('@/views/maintenance/distribution/index'),
         meta: { title: '送货表单模板', icon: 'table' }
       }
     ]

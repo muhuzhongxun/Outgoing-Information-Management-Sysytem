@@ -6,6 +6,21 @@ export async function getUserListApi(parm) {
   return await http.get('api/sysUser/list', parm)
 }
 
+// 新增用户
+export async function addUserApi(parm) {
+  return await http.post('/api/sysUser', parm)
+}
+
+// 编辑用户
+export async function editUserApi(parm) {
+  return await http.put('/api/sysUser', parm)
+}
+
+// 删除用户
+export async function deleteUserApi(parm) {
+  return await http.delete('/api/sysUser', parm)
+}
+
 export function login(data) {
   return request({
     url: '/vue-admin-template/user/login',

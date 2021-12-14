@@ -1,8 +1,5 @@
 import Vue from 'vue'
 
-// import './plugins/axios'
-// import './plugins/element.js'
-
 import 'normalize.css/normalize.css' // A modern alternative to CSS resets
 
 import ElementUI from 'element-ui'
@@ -12,10 +9,14 @@ import locale from 'element-ui/lib/locale/lang/zh-CN' // lang 中文
 import '@/styles/index.scss' // global css
 // 清空表单
 import resetForm from '@/utils/resetForm'
-Vue.prototype.$resetFrom = resetForm
+Vue.prototype.$resetForm = resetForm
 // 消息提示框
-import myconfirm from './utils/myconfirm'
+import myconfirm from '@/utils/myconfirm'
 Vue.prototype.$myconfirm = myconfirm
+// 对象快速复制
+import objCopy from '@/utils/objCopy'
+Vue.prototype.$objCopy = objCopy
+
 import App from './App'
 import store from './store'
 import router from './router'

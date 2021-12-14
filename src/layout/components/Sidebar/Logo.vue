@@ -14,6 +14,9 @@
 </template>
 
 <script>
+
+import icon from '@/assets/logo.png'
+
 export default {
   name: 'SidebarLogo',
   props: {
@@ -24,14 +27,22 @@ export default {
   },
   data() {
     return {
-      title: 'Vue Admin Template',
-      logo: 'https://wpimg.wallstcn.com/69a1c46c-eb1c-4b46-8bd4-e9e686ef5251.png'
+      title: '后台管理系统',
+      logo: icon
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+img {
+  //解决index页面的logo模糊问题，然而也没完全解决
+    image-rendering: -moz-crisp-edges; /* Firefox */
+    image-rendering: -o-crisp-edges; /* Opera */
+    image-rendering: -webkit-optimize-contrast; /* Webkit (non-standard naming) */
+    image-rendering: crisp-edges;    -ms-interpolation-mode: nearest-neighbor; /* IE (non-standard property) */
+    }
+
 .sidebarLogoFade-enter-active {
   transition: opacity 1.5s;
 }

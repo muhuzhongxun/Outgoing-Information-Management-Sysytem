@@ -50,7 +50,7 @@ service.interceptors.response.use(
     // if the custom code is not 200, it is judged as an error.
     if (res.code !== 200) {
       Message({
-        message: res.msg || 'Error',
+        message: res.msg || '服务器出错',
         type: 'error',
         duration: 5 * 1000
       })
@@ -68,7 +68,7 @@ service.interceptors.response.use(
           })
         })
       }
-      return Promise.reject(new Error(res.msg || 'Error'))
+      return Promise.reject(new Error(res.msg || '服务器出错'))
     } else {
       return res
     }
@@ -76,7 +76,7 @@ service.interceptors.response.use(
   error => {
     console.log('err' + error) // for debug
     Message({
-      message: error.msg,
+      message: error.msg || '服务器出错',
       type: 'error',
       duration: 5 * 1000
     })
@@ -151,7 +151,7 @@ const http = {
     if (Object.is(params, undefined || null)) {
       _params = ''
     } else {
-      _params = '1'
+      _params = '/'
       for (const key in params) {
         // eslint-disable-next-line no-prototype-builtins
         if (params.hasOwnProperty(key) && params[key] !== null && params[key] !== '') {
@@ -163,22 +163,12 @@ const http = {
     }
     if (_params) {
       return service.delete(`${url}${_params}`).catch(err => {
-        // 被替换 message.error(err.msg)
-        Message({
-          message: err.msg,
-          type: 'error',
-          duration: 5 * 1000
-        })
+        // message.error(err.msg)
         return Promise.reject(err)
       })
     } else {
       return service.delete(url).catch(err => {
-        // 被替换 message.error(err.msg)
-        Message({
-          message: err.msg,
-          type: 'error',
-          duration: 5 * 1000
-        })
+        // message.error(err.msg)
         return Promise.reject(err)
       })
     }
