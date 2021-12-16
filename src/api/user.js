@@ -16,7 +16,7 @@ export async function editUserApi(parm) {
   return await http.put('/api/sysUser', parm)
 }
 
-// 删除用户
+// 删除用户 此处 parm:{userId:${key}}
 export async function deleteUserApi(parm) {
   return await http.delete('/api/sysUser', parm)
 }

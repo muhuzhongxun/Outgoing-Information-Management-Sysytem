@@ -157,8 +157,14 @@ export const constantRoutes = [
     component: Layout,
     alwaysShow: true,
     name: 'dictionary',
-    meta: { title: '数据字典', icon: 'el-icon-s-help' },
+    meta: { title: '通用数据', icon: 'el-icon-s-help' },
     children: [
+      {
+        path: 'dict',
+        name: 'Dict',
+        component: () => import('@/views/dictionary/dict/index'),
+        meta: { title: '数据字典', icon: 'table' }
+      },
       {
         path: 'location',
         name: 'Location',

@@ -63,16 +63,15 @@
     -->
     <el-pagination
       :current-page.sync="parms.curentPage"
-      :page-sizes="[10, 20, 40, 80, 100]"
+      :page-sizes="[3,10, 20, 40, 80, 100]"
       :page-size="parms.pageSize"
       layout="total, sizes, prev, pager, next, jumper"
       :total="parms.total"
+      :pager-count="7"
       background
       @size-change="sizeChange"
       @current-change="curentChange"
-    >
-      :pager-count="7">
-    </el-pagination>
+    />
     <!-- 新增或编辑弹窗 -->
     <SysDialog
       :title="dialog.title"
@@ -323,16 +322,29 @@ export default {
       if (res.code === 200) {
         // console.log(res)
         this.tableList = res.data.records
+        // parms列表总条数
+        this.parms.total = res.data.total
       }
     },
     // 页容量改变时触发
-    sizeChange(val) {
-
+    async sizeChange(val) {
+      // 清空表格列表
+      this.tableList = []
+      this.parms.pageSize = val
+      const res = await getUserListApi(this.parms)
+      if (res.code === 200) {
+        this.tableList = res.data.records
+      }
     },
 
     // 页数改变时触发
-    curentChange() {
-
+    async curentChange(val) {
+      // 清空表格列表
+      this.tableList = []
+      const res = await getUserListApi(this.parms)
+      if (res.code === 200) {
+        this.tableList = res.data.records
+      }
     }
   }
 
