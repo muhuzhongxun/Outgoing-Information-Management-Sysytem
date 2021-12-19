@@ -27,13 +27,31 @@ const mutations = {
   }
 }
 
+// const actions = {
+//   // user login
+//   login({ commit }, userInfo) {
+//     const { username, password } = userInfo
+//     return new Promise((resolve, reject) => {
+//       login({ username: username.trim(), password: password }).then(response => {
+//         const { data } = response
+//         commit('SET_TOKEN', data.token)
+//         setToken(data.token)
+//         resolve()
+//       }).catch(error => {
+//         reject(error)
+//       })
+//     })
+//   },
+
+// 重写把username改成loginname
 const actions = {
   // user login
   login({ commit }, userInfo) {
-    const { username, password } = userInfo
+    const { loginName, password } = userInfo
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
+      login({ loginName: loginName.trim(), password: password }).then(response => {
         const { data } = response
+        console.log(response)
         commit('SET_TOKEN', data.token)
         setToken(data.token)
         resolve()

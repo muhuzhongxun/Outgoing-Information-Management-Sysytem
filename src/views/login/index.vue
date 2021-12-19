@@ -1,237 +1,234 @@
 <template>
-  <div class="login-container">
-    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
-
-      <div class="title-container">
-        <h3 class="title">Login Form</h3>
-      </div>
-
-      <el-form-item prop="username">
-        <span class="svg-container">
-          <svg-icon icon-class="user" />
-        </span>
-        <el-input
-          ref="username"
-          v-model="loginForm.username"
-          placeholder="Username"
-          name="username"
-          type="text"
-          tabindex="1"
-          auto-complete="on"
-        />
-      </el-form-item>
-
-      <el-form-item prop="password">
-        <span class="svg-container">
-          <svg-icon icon-class="password" />
-        </span>
-        <el-input
-          :key="passwordType"
-          ref="password"
-          v-model="loginForm.password"
-          :type="passwordType"
-          placeholder="Password"
-          name="password"
-          tabindex="2"
-          auto-complete="on"
-          @keyup.enter.native="handleLogin"
-        />
-        <span class="show-pwd" @click="showPwd">
-          <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
-        </span>
-      </el-form-item>
-
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
-
-      <div class="tips">
-        <span style="margin-right:20px;">username: admin</span>
-        <span> password: any</span>
-      </div>
-
-    </el-form>
+  <div>
+    <!--flex弹性盒子模型，justify-content：主抽 -->
+    <div style="display: flex;justify-content: center;margin-top:150px">
+      <el-card style="width: 400px">
+        <div slot="header" class="clearfix">
+          <span>后台管理系统</span>
+        </div>
+        <table>
+          <tr>
+            <td>用户名</td>
+            <td>
+              <el-input v-model="user.loginName" placeholder="请输入用户名" />
+            </td>
+          </tr>
+          <tr>
+            <td>密码</td>
+            <td>
+              <el-input
+                v-model="user.password"
+                type="password"
+                placeholder="请输入密码"
+                @keydown.enter.native="handleLogin"
+              />
+              <!-- @keydown.enter.native="doLogin"当按下enter键的时候也会执行doLogin方法-->
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="s-canvas" @click="createdCode">
+                <canvas id="s-canvas" :width="contentWidth" :height="contentHeight" />
+              </div>
+            </td>
+            <td>
+              <el-input v-model="user.identifyCode" placeholder="请输入验证码" />
+            </td>
+          </tr>
+          <tr>
+            <!-- 占两行-->
+            <td colspan="2" align="center">
+              <!-- 点击事件的两种不同的写法v-on:click和 @click-->
+              <!--<el-button style="width: 300px" type="primary" v-on:click="doLogin">登录</el-button>-->
+              <el-button style="width: 150px" type="primary" @click="handleLogin">登录</el-button>
+              <el-link type="danger" style="margin-left: 25px">忘记密码？</el-link>
+            </td>
+          </tr>
+        </table>
+      </el-card>
+    </div>
   </div>
 </template>
 
 <script>
-import { validUsername } from '@/utils/validate'
 
 export default {
-  name: 'Login',
-  data() {
-    const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
-        callback(new Error('Please enter the correct user name'))
-      } else {
-        callback()
-      }
-    }
-    const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
-        callback(new Error('The password can not be less than 6 digits'))
-      } else {
-        callback()
-      }
-    }
-    return {
-      loginForm: {
-        username: 'admin',
-        password: '111111'
-      },
-      loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
-      },
-      loading: false,
-      passwordType: 'password',
-      redirect: undefined
+  props: {
+    fontSizeMin: {
+      type: Number,
+      default: 25
+    },
+    fontSizeMax: {
+      type: Number,
+      default: 30
+    },
+    backgroundColorMin: {
+      type: Number,
+      default: 255
+    },
+    backgroundColorMax: {
+      type: Number,
+      default: 255
+    },
+    colorMin: {
+      type: Number,
+      default: 0
+    },
+    colorMax: {
+      type: Number,
+      default: 160
+    },
+    lineColorMin: {
+      type: Number,
+      default: 100
+    },
+    lineColorMax: {
+      type: Number,
+      default: 255
+    },
+    dotColorMin: {
+      type: Number,
+      default: 0
+    },
+    dotColorMax: {
+      type: Number,
+      default: 255
+    },
+    contentWidth: {
+      type: Number,
+      default: 120
+    },
+    contentHeight: {
+      type: Number,
+      default: 34
     }
   },
-  watch: {
-    $route: {
-      handler: function(route) {
-        this.redirect = route.query && route.query.redirect
+  data() {
+    return {
+      /* 点击登录返回用户姓名密码以及用户类型*/
+      user: {
+        loginName: 'muhuzhongxun',
+        password: '123456'
       },
-      immediate: true
+      identifyCode: ''
     }
+  },
+  mounted() {
+    this.createdCode()
   },
   methods: {
-    showPwd() {
-      if (this.passwordType === 'password') {
-        this.passwordType = ''
-      } else {
-        this.passwordType = 'password'
-      }
-      this.$nextTick(() => {
-        this.$refs.password.focus()
-      })
-    },
     handleLogin() {
-      this.$refs.loginForm.validate(valid => {
-        if (valid) {
-          this.loading = true
-          this.$store.dispatch('user/login', this.loginForm).then(() => {
-            this.$router.push({ path: this.redirect || '/' })
-            this.loading = false
-          }).catch(() => {
-            this.loading = false
-          })
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
+      // 原验证码：this.identifyCode； 输入的验证码：this.user.identifyCode；  touppercase()将字符串换成大写。
+      if (this.identifyCode.toUpperCase() !== this.user.identifyCode.toUpperCase()) {
+        alert('请重新输入验证码！')
+      } else {
+        this.$store.dispatch('user/login', this.user).then(() => {
+          this.$router.push({ path: this.redirect || '/' })
+          this.loading = false
+        }).catch(() => {
+          this.loading = false
+        })
+      }
+    },
+
+    // 生成4个随机数
+    createdCode() {
+      const len = 4
+      const codeList = []
+      const chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz123456789'
+      const charsLen = chars.length
+      for (let i = 0; i < len; i++) {
+        codeList.push(chars.charAt(Math.floor(Math.random() * charsLen)))
+      }
+      this.identifyCode = codeList.join('')
+      this.$emit('getIdentifyCode', this.identifyCode.toLowerCase())
+      this.drawPic()
+    },
+
+    // 生成一个随机数
+    randomNum(min, max) {
+      return Math.floor(Math.random() * (max - min) + min)
+    },
+    // 生成一个随机的颜色
+    randomColor(min, max) {
+      const r = this.randomNum(min, max)
+      const g = this.randomNum(min, max)
+      const b = this.randomNum(min, max)
+      return 'rgb(' + r + ',' + g + ',' + b + ')'
+    },
+
+    drawPic() {
+      const canvas = document.getElementById('s-canvas')
+      const ctx = canvas.getContext('2d')
+      ctx.textBaseline = 'bottom'
+      // 绘制背景
+      ctx.fillStyle = this.randomColor(this.backgroundColorMin, this.backgroundColorMax)
+      ctx.fillRect(0, 0, this.contentWidth, this.contentHeight)
+      // 绘制文字
+      for (let i = 0; i < this.identifyCode.length; i++) {
+        this.drawText(ctx, this.identifyCode[i], i)
+      }
+      this.drawLine(ctx)// 添加干扰线
+      // this.drawDot(ctx)//添加干扰点
+    },
+
+    drawText(ctx, txt, i) {
+      ctx.fillStyle = this.randomColor(this.colorMin, this.colorMax)
+      ctx.font = this.randomNum(this.fontSizeMin, this.fontSizeMax) + 'px SimHei'
+      const x = (i + 1) * (this.contentWidth / (this.identifyCode.length + 1))
+      const y = this.randomNum(this.fontSizeMax, this.contentHeight - 5)
+      var deg = this.randomNum(-45, 45)
+      // 修改坐标原点和旋转角度
+      ctx.translate(x, y)
+      ctx.rotate(deg * Math.PI / 180)
+      ctx.fillText(txt, 0, 0)
+      // 恢复坐标原点和旋转角度
+      ctx.rotate(-deg * Math.PI / 180)
+      ctx.translate(-x, -y)
+    },
+
+    // 绘制干扰线
+    drawLine(ctx) {
+      for (let i = 0; i < 5; i++) {
+        ctx.strokeStyle = this.randomColor(this.lineColorMin, this.lineColorMax)
+        ctx.beginPath()
+        ctx.moveTo(this.randomNum(0, this.contentWidth), this.randomNum(0, this.contentHeight))
+        ctx.lineTo(this.randomNum(0, this.contentWidth), this.randomNum(0, this.contentHeight))
+        ctx.stroke()
+      }
+    },
+
+    // 绘制干扰点
+    drawDot(ctx) {
+      for (let i = 0; i < 80; i++) {
+        ctx.fillStyle = this.randomColor(0, 255)
+        ctx.beginPath()
+        ctx.arc(this.randomNum(0, this.contentWidth), this.randomNum(0, this.contentHeight), 1, 0, 2 * Math.PI)
+        ctx.fill()
+      }
     }
+
   }
+
 }
+
 </script>
 
-<style lang="scss">
-/* 修复input 背景不协调 和光标变色 */
-/* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
+<style scoped>
+@import '//unpkg.com/element-ui@2.15.2/lib/theme-chalk/index.css';
 
-$bg:#283443;
-$light_gray:#fff;
-$cursor: #fff;
-
-@supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
-  .login-container .el-input input {
-    color: $cursor;
-  }
-}
-
-/* reset element-ui css */
-.login-container {
-  .el-input {
-    display: inline-block;
-    height: 47px;
-    width: 85%;
-
-    input {
-      background: transparent;
-      border: 0px;
-      -webkit-appearance: none;
-      border-radius: 0px;
-      padding: 12px 5px 12px 15px;
-      color: $light_gray;
-      height: 47px;
-      caret-color: $cursor;
-
-      &:-webkit-autofill {
-        box-shadow: 0 0 0px 1000px $bg inset !important;
-        -webkit-text-fill-color: $cursor !important;
-      }
-    }
-  }
-
-  .el-form-item {
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
-    color: #454545;
-  }
-}
-</style>
-
-<style lang="scss" scoped>
-$bg:#2d3a4b;
-$dark_gray:#889aa4;
-$light_gray:#eee;
-
-.login-container {
-  min-height: 100%;
+.el-select {
+  /*补加让选择器填充tr空间，与上面的两个文本框保持大小一致*/
   width: 100%;
-  background-color: $bg;
-  overflow: hidden;
+}
 
-  .login-form {
-    position: relative;
-    width: 520px;
-    max-width: 100%;
-    padding: 160px 35px 0;
-    margin: 0 auto;
-    overflow: hidden;
-  }
+.s-canvas {
+  height: 38px;
+  cursor: pointer;
+}
 
-  .tips {
-    font-size: 14px;
-    color: #fff;
-    margin-bottom: 10px;
-
-    span {
-      &:first-of-type {
-        margin-right: 16px;
-      }
-    }
-  }
-
-  .svg-container {
-    padding: 6px 5px 6px 15px;
-    color: $dark_gray;
-    vertical-align: middle;
-    width: 30px;
-    display: inline-block;
-  }
-
-  .title-container {
-    position: relative;
-
-    .title {
-      font-size: 26px;
-      color: $light_gray;
-      margin: 0px auto 40px auto;
-      text-align: center;
-      font-weight: bold;
-    }
-  }
-
-  .show-pwd {
-    position: absolute;
-    right: 10px;
-    top: 7px;
-    font-size: 16px;
-    color: $dark_gray;
-    cursor: pointer;
-    user-select: none;
-  }
+.s-canvas canvas {
+  margin-top: 1px;
+  margin-left: 8px;
 }
 </style>

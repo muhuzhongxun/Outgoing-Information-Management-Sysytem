@@ -10,42 +10,38 @@
           <tr>
             <td>用户名</td>
             <td>
-              <el-input v-model="user.loginName" placeholder="请输入用户名" />
+              <el-input v-model="user.username" placeholder="请输入用户名"></el-input>
             </td>
           </tr>
           <tr>
             <td>密码</td>
             <td>
-              <el-input
-                v-model="user.password"
-                type="password"
-                placeholder="请输入密码"
-                @keydown.enter.native="doLogin"
-              />
+              <el-input type="password" v-model="user.password" placeholder="请输入密码"
+                        @keydown.enter.native="doLogin"></el-input>
               <!-- @keydown.enter.native="doLogin"当按下enter键的时候也会执行doLogin方法-->
             </td>
           </tr>
-          <!-- <tr>
+          <tr>
             <td>身份</td>
             <td>
               <el-select v-model="user.type" placeholder="请选择">
                 <el-option
-                  v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                />
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                </el-option>
               </el-select>
             </td>
-          </tr> -->
+          </tr>
           <tr>
             <td>
               <div class="s-canvas" @click="createdCode">
-                <canvas id="s-canvas" :width="contentWidth" :height="contentHeight" />
+                <canvas id="s-canvas" :width="contentWidth" :height="contentHeight"></canvas>
               </div>
             </td>
             <td>
-              <el-input v-model="user.identifyCode" placeholder="请输入验证码" />
+              <el-input v-model="user.identifyCode" placeholder="请输入验证码"></el-input>
             </td>
           </tr>
           <tr>
@@ -65,7 +61,7 @@
 
 <script>
 export default {
-  name: 'Login',
+  name: "login",
   props: {
     fontSizeMin: {
       type: Number,
@@ -118,33 +114,35 @@ export default {
   },
   data() {
     return {
-      /* 点击登录返回用户姓名密码以及用户类型*/
+      /*点击登录返回用户姓名密码以及用户类型*/
       user: {
-        loginName: 'muhuzhongxun',
+        username: '1',
         password: '123456',
         identifyCode: '',
         realname: '',
-        // type: '学生',
+        type: '学生',
         useradd: ''
       },
-      // /* 选择器selecte 用户类型的内容*/
-      // options: [{
-      //   value: '学生',
-      //   label: '学生用户'
-      // }, {
-      //   value: '教师',
-      //   label: '教师用户'
-      // }, {
-      //   value: '管理员',
-      //   label: '管理用户'
-      // }, {
-      //   value: '主任',
-      //   label: '教务主任'
-      // }, {
-      //   value: '秘书',
-      //   label: '教务秘书'
-      // }],
-      identifyCode: ''
+      /*选择器selecte 用户类型的内容*/
+      options: [{
+        value: '学生',
+        label: '学生用户'
+      }, {
+        value: '教师',
+        label: '教师用户'
+      }, {
+        value: '管理员',
+        label: '管理用户'
+      }, {
+        value: '主任',
+        label: '教务主任'
+      }, {
+        value: '秘书',
+        label: '教务秘书'
+      }]
+      , identifyCode: ''
+
+
     }
   },
   mounted() {
@@ -152,35 +150,50 @@ export default {
   },
   methods: {
     doLogin(url, config) {
-      // alert(JSON.stringify(this.user)) // 可以直接把this.user对象传给后端进行校验用户名和密码
 
-      // 原验证码：this.identifyCode； 输入的验证码：this.user.identifyCode；  touppercase()将字符串换成大写。
-      // eslint-disable-next-line eqeqeq
+      alert(JSON.stringify(this.user))//可以直接把this.user对象传给后端进行校验用户名和密码
+      if (this.user.type == "学生") {
+        //this.user.useradd = 'student'
+        //浏览器会话结束时过期
+        this.$cookies.set("CHtype","学生","0");
+        this.$cookies.set("type","student","0");
+      } else if (this.user.type == "教师" || this.user.type == "主任") {
+        //this.user.useradd = 'teacher'
+        this.$cookies.set("CHtype","教师","0");
+        this.$cookies.set("type","teacher","0");
+      } else if (this.user.type == "管理员" || this.user.type == "秘书") {
+        this.user.useradd = 'admin'
+        this.$cookies.set("CHtype","管理员","0");
+        this.$cookies.set("type","admin","0");
+      }
+
+      //原验证码：this.identifyCode； 输入的验证码：this.user.identifyCode；  touppercase()将字符串换成大写。
       if (this.identifyCode.toUpperCase() != this.user.identifyCode.toUpperCase()) {
         alert('请重新输入验证码！')
       } else {
-        const _this = this
-        // eslint-disable-next-line no-undef
-        axios.post('http://localhost:8089/' + 'api/sysUser' + '/login', this.user).then(function(response) {
+        let _this = this
+        axios.post('http://localhost:8181/' + this.$cookies.get("type") + '/login', this.user).then(function (response) {
           if (response.data) {
-            // 浏览器会话结束时过期
-            _this.$cookies.set('username', _this.user.username, '0')
-            // 跳转到用户界面，并把用户信息传到前端页面
-            _this.$alert('登录成功', '登录状态', {
+            //浏览器会话结束时过期
+            _this.$cookies.set("username",_this.user.username,"0");
+            //跳转到用户界面，并把学生号/教师号传过去
+            _this.$alert("登录成功", '登录状态', {
               confirmButtonText: '确定',
               callback: action => {
                 _this.$router.push({
                   path: '/'
-                })
+                });
               }
             })
           } else {
-            _this.$alert('用户名或密码有误！', '登录失败', {
+            _this.$alert("用户名或密码有误！", '登录失败', {
               confirmButtonText: '确定'
             })
           }
-        })
+        });
       }
+
+
     },
 
     // 生成4个随机数
@@ -220,8 +233,8 @@ export default {
       for (let i = 0; i < this.identifyCode.length; i++) {
         this.drawText(ctx, this.identifyCode[i], i)
       }
-      this.drawLine(ctx)// 添加干扰线
-      // this.drawDot(ctx)//添加干扰点
+      this.drawLine(ctx)//添加干扰线
+      //this.drawDot(ctx)//添加干扰点
     },
 
     drawText(ctx, txt, i) {
@@ -260,7 +273,9 @@ export default {
       }
     }
 
-  }
+
+  },
+
 
 }
 

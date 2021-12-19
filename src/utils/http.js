@@ -118,7 +118,7 @@ const http = {
       }
     })
   },
-  // parm =>{id: 10}
+  // parm =>{id: 10} 该方法把对象转换成/value1
   // http://localhost:8089/api/sysUser/10
   getRestApi(url, params) {
     let _params
@@ -144,7 +144,7 @@ const http = {
       return service.get(url)
     }
   },
-  // parm=>{id:10]
+  // parm=>{id:10] 该方法把对象转换成/value1
   // http://localhost:8089/api/sysUser/10
   delete(url, params) {
     let _params
