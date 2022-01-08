@@ -92,6 +92,12 @@ export const constantRoutes = [
         name: 'OrderList',
         component: () => import('@/views/datamanage/orderList/index'),
         meta: { title: '订单列表', icon: 'table' }
+      },
+      {
+        path: 'identityList',
+        name: 'IdentityList',
+        component: () => import('@/views/datamanage/identityList/index'),
+        meta: { title: '实名信息列表', icon: 'table' }
       }
     ]
   },

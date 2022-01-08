@@ -7,13 +7,13 @@
      -->
     <el-form ref="searchForm" :model="parms" label-width="80px" :inline="true" size="small">
       <el-form-item label="姓名">
-        <el-input v-model="parms.userName" />
+        <el-input v-model="parms.userName" @keyup.enter.native="getUserList" />
       </el-form-item>
       <el-form-item label="电话">
-        <el-input v-model="parms.phone" />
+        <el-input v-model="parms.phone" @keyup.enter.native="getUserList" />
       </el-form-item>
       <el-form-item>
-        <el-button icon="el-icon-search">查询</el-button>
+        <el-button icon="el-icon-search" @click="getUserList">查询</el-button>
         <el-button type="primary" icon="el-icon-plus" @click="addUser">新增</el-button>
       </el-form-item>
     </el-form>
@@ -94,7 +94,7 @@
             <el-input v-model="addModel.loginName" />
           </el-form-item>
           <el-form-item prop="password" label="登陆密码">
-            <el-input v-model="addModel.password" type="password" />
+            <el-input v-model="addModel.password" type="password" disabled />
           </el-form-item>
           <el-form-item prop="userName" label="用户名">
             <el-input v-model="addModel.userName" />

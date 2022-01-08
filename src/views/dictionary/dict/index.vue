@@ -13,14 +13,15 @@
       :load="getChildrens"
     >
       <el-form-item label="字节名称">
-        <el-input v-model="parms.name" />
+        <el-input v-model="parms.name" @keyup.enter.native="selectDictList" />
       </el-form-item>
       <el-form-item label="字节编码">
-        <el-input v-model="parms.dictCode" />
+        <el-input v-model="parms.dictCode" @keyup.enter.native="selectDictList" />
       </el-form-item>
       <el-form-item>
-        <el-button icon="el-icon-search">查询</el-button>
-        <el-button type="primary" icon="el-icon-plus" @click="addUser">新增</el-button>
+        <el-button icon="el-icon-search" @click="selectDictList">查询</el-button>
+        <el-button type="success" icon="el-icon-refresh" @click="reloadDictList">重置</el-button>
+        <el-button type="primary" icon="el-icon-plus" @click="addDict">新增</el-button>
       </el-form-item>
     </el-form>
     <el-form ref="form" :model="form" :rules="rules" label-width="80px" :inline="true" size="small">
@@ -69,34 +70,13 @@
         <el-table-column prop="dictCode" label="编码" width="220" />
         <el-table-column prop="value" label="值" width="230" align="left" />
         <el-table-column prop="createTime" label="创建时间" align="center" />
-        <!-- <el-table-column label="名称" width="230" align="left">
-          <template slot-scope="scope">
-            <span>{{ scope.row.name }}</span>
-          </template>
-        </el-table-column>
-
-        <el-table-column label="编码" width="220">
-          <template slot-scope="{row}">
-            {{ row.dictCode }}
-          </template>
-        </el-table-column>
-        <el-table-column sortable label="值" width="230" align="left">
-          <template slot-scope="scope">
-            <span>{{ scope.row.value }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column sortable label="创建时间" align="center">
-          <template slot-scope="scope">
-            <span>{{ scope.row.createTime }}</span>
-          </template>
-        </el-table-column> -->
       </el-table>
     </div>
   </el-main>
 </template>
 
 <script>
-import { getDictListApi } from '@/api/dict'
+import { getDictListApi, FlexibleQueryDictApi } from '@/api/dict'
 export default {
   data() {
     return {
@@ -105,9 +85,6 @@ export default {
         id: '',
         name: '',
         dictCode: ''
-        // curentPage: 1,
-        // pageSize: 10,
-        // total: 0
       },
       // 默认导入的弹窗关闭
       dialogImportVisible: false,
@@ -119,6 +96,24 @@ export default {
     this.getDictList(1)
   },
   methods: {
+    // 查询按钮事件
+    async selectDictList() {
+      // 条件判断，不然会有点卡
+      if (this.parms.name !== '' || this.parms.dictCode !== '') {
+        const res = await FlexibleQueryDictApi(this.parms)
+        if (res.code === 200) {
+          this.tableList = res.data
+        }
+      }
+    },
+    // 重置列表按钮事件
+    reloadDictList() {
+      location.reload()
+    },
+    // 添加字典按钮事件
+    addDict() {
+
+    },
     // 打开导入弹窗
     importData() {
       this.dialogImportVisible = true
